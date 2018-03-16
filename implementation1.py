@@ -4,7 +4,6 @@
 # two agents face two doors. one door has a hungry tiger and the other door has money. the position of these are unknown.
 # 
 import math
-import importlib
 from random import *
 from rewards import *
 
@@ -37,8 +36,6 @@ def choosingAction(agent0, agent1):
 	print("action0 = " + repr(action0) + " action1 = " + repr(action1))	
 	return action0, action1
 
-
-
 def main():
 	agent0 = []
 	agent1 = []
@@ -53,7 +50,8 @@ def main():
 			tigerDoor, agent0, agent1 = initializing()
 
 		action0, action1 = choosingAction(agent0, agent1)
-		listened, reward = reward1(tigerDoor, action0, action1)
+		listened, reward, agent0, agent1 = rewardA(tigerDoor, action0, action1, agent0, agent1)
+		print(agent0, agent1)
 
 		totalReward = totalReward + reward
 		print("totalReward: " + repr(totalReward))
