@@ -1,0 +1,10 @@
+create a DEC-POMDP
+where n robots observe soemthing from the environment
+once they observe something from the enrionment they choose their action
+robots do not communicate
+
+Decenteralized Data Fusion (Section2.3)
+
+
+POMDP Auction (Section 5.1)
+
