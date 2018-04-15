@@ -126,8 +126,7 @@ class MDP(object):
 			# Take an action, move to next state
 			nextState = self.takeAction(stateIndex, actionIndex)
 
-			print "In state: {}, taking action: {}, moving to state: {}".format(
-				state, self.a[actionIndex], nextState)
+			print("In state: {}, taking action: {}, moving to state: {}".format(state, self.a[actionIndex], nextState))
 
 			# End game if terminal state reached
 			state = int(nextState)
