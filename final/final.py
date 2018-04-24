@@ -39,12 +39,12 @@ def createFig2(world):
 	world[5][4] = 2
 	return world
 
-def still(stateX, stateY):
+def still(stateX, stateY, world):
 	newStateX = stateX
 	newStateY = stateY
 	return newStateX, newStateY
 
-def up(stateX, stateY):		# right 1
+def up(stateX, stateY, world):		# right 1
 	global m
 	newStateX = stateX
 	newStateY = stateY +1
@@ -53,7 +53,7 @@ def up(stateX, stateY):		# right 1
 		print("Couldn't move.")
 	return newStateX, newStateY
 
-def right(stateX, stateY):	# down 2
+def right(stateX, stateY, world):	# down 2
 	global n
 	newStateX = stateX +1
 	newStateY = stateY
@@ -62,7 +62,7 @@ def right(stateX, stateY):	# down 2
 		print("Couldn't move.")
 	return newStateX, newStateY
 
-def down(stateX, stateY):	# left 3
+def down(stateX, stateY, world):	# left 3
 	newStateX = stateX
 	newStateY = stateY -1
 	if newStateY <0:
@@ -70,7 +70,7 @@ def down(stateX, stateY):	# left 3
 		print("Couldn't move.")
 	return newStateX, newStateY
 
-def left(stateX, stateY):	# up 4
+def left(stateX, stateY, world):	# up 4
 	newStateX = stateX -1
 	newStateY = stateY
 	if newStateX <0:
@@ -78,17 +78,25 @@ def left(stateX, stateY):	# up 4
 		print("Couldn't move.")
 	return newStateX, newStateY
 
-def move(direction, stateX, stateY):
+# def clearDanger(stateX, stateY, world):
+
+# def extractVictim(stateX, stateY, world):
+
+def doAction(direction, stateX, stateY, world):
 	if direction == 1:		# right
-		newStateX, newStateY = up(stateX, stateY)
+		newStateX, newStateY = up(stateX, stateY, world)
 	elif direction == 2:	# down
-		newStateX, newStateY = right(stateX, stateY)
+		newStateX, newStateY = right(stateX, stateY, world)
 	elif direction == 3:	# left
-		newStateX, newStateY = down(stateX, stateY)
+		newStateX, newStateY = down(stateX, stateY, world)
 	elif direction == 4:	# up
-		newStateX, newStateY = left(stateX, stateY)
+		newStateX, newStateY = left(stateX, stateY, world)
 	elif direction == 0:
-		newStateX, newStateY = still(stateX, stateY)
+		newStateX, newStateY = still(stateX, stateY, world)
+	elif direction == 5:
+		newStateX, newStateY = clearDanger(stateX, stateY, world)
+	elif direction == 6:
+		newStateX, newStateY = extractVictim(stateX,stateY, world)
 	else:
 		newStateX = stateX
 		newStateY = stateY
@@ -96,70 +104,77 @@ def move(direction, stateX, stateY):
 
 	return newStateX, newStateY
 
+def findPossibleMovement(stateX, stateY, world):
+	global m, n
+	actions = []
+	index1 = stateY+1
+	index2 = stateX+1
+	index3 = stateY-1
+	index4 = stateX-1
+	
+	actions.append(world[stateX][stateY]) # check current location
+	if (0 <= index1) and (index1 < m):
+		actions.append(world[stateX][stateY+1])	# check right
+	else:
+		actions.append(-1)
+	if (0 <= index2) and (index2 < n):
+		actions.append(world[stateX+1][stateY]) # check down
+	else:
+		actions.append(-1)
+	if (0 <= index3) and (index3 < m):
+		actions.append(world[stateX][stateY-1]) # check left
+	else:
+		actions.append(-1)
+	if (0 <= index4) and (index4 < n):
+		actions.append(world[stateX-1][stateY]) # check up
+	else:
+		actions.append(-1)
+	return actions
+
+
 if __name__ == '__main__':
-	# behaviors: try to kick, run away
-	# agents: 1 protector, 2 kickers
 	# state: grid world
 	# actionR: up:4, down:2, left:3, right:1, stayStill:0, clearDanger:5
-	# actionH: up:4, down:2, left:3, right:1, stayStill:0, extractVictim:5
-	# WORLD description: 0:can't move, 1:can move, 2:node, 3:danger, 4:victim
+	# actionH: up:4, down:2, left:3, right:1, stayStill:0, extractVictim:6
+	# WORLD description: 0:can't move, 1:can move, 2:node, 3:danger, 4:victim, 5:danger & victim
 
-	world1 = createGrid(1)
+	# Initialize Worlds and Agents
+	world1 = createGrid(1)	# create worlds
 	world1 = createFig2(world1)
 	world2 = copy.deepcopy(world1)
 	world3 = copy.deepcopy(world1)
 	# print('\n'.join([''.join(['{:4}'.format(item) for item in row]) for row in world1]))
 	# print('\n'.join([''.join(['{:4}'.format(item) for item in row]) for row in world2]))
 	# print('\n'.join([''.join(['{:4}'.format(item) for item in row]) for row in world3]))
-	agent1 = [1,0]	# initial location of agent1
-	agent2 = [1,0]	# initial location of agent2
-	agent3 = [1,0]	# initial location of agent3
-	
+	agent1 = [3,3]	# initial location of agents
+	agent2 = [1,0]
+	agent3 = [1,0]
+	SAS1 = [0,0,0]	# keep track of state action state' for rewards
+	SAS2 = [0,0,0]
+	SAS3 = [0,0,0]
+
+	# Check Possible Movements
+	possibleMovement1 = findPossibleMovement(agent1[0], agent1[1], world1) # returns list [still, right, down, left, up]
+
+	SAS1[0] = possibleMovement1[0]
+
+	# Collect Observation
+	observationTemp = findPossibleMovement(agent1[0], agent1[1], world1)
+	observation = observationTemp[0]
+
+	# TODO: take an action
+	if observation == 4:
+		action = 6
+	elif observation == 3:
+		action = 5
+	elif observation == 5:
+		action = 5 & 6 # TODO: fix this for both depending on agent
+	else:
+
+	SAS1[1] = # TODO: place action in here
 
 
 	raw_input()
-	# print(repr(agent1[0]) + repr(agent1[1]))
-
-	# for i in range(0,total):
-	# locationWorld = createGrid(0)
-	# agent0 = [n-1,m-1]
-	# agent2 = [0,0]
-	# jointReward = 0
-	# numAgents = 3
-	# action = 0
-	# counter = 0
-	# while 1:
-	# 	agent0, action0 = agentMovement(agent0, locationWorld, world, action, 0)
-	# 	agent1, action1 = agentMovement(agent1, locationWorld, world, action, 1)
-	# 	agent2, action2 = agentMovement(agent2, locationWorld, world, action1, 1)
-	# 	tempAgent0 = world[agent0[0]][agent0[1]]
-	# 	if world[agent1[0]][agent1[1]] == 1:
-	# 		jointReward = jointReward + 1
-	# 	if world[agent2[0]][agent2[1]] == 1:
-	# 		jointReward = jointReward + 1
-	# 	agents = [agent0, agent1, agent2]
-	# 	locationWorld, world = updateWorld(locationWorld, world, numAgents, agents)
-		
-	# 	# print('\n')
-	# 	# print('\n'.join([''.join(['{:4}'.format(item) for item in row]) for row in locationWorld]))
-	# 	# print('\n')
-	# 	# print('\n'.join([''.join(['{:4}'.format(item) for item in row]) for row in world]))
-	# 	counter = counter + 1
-
-	# 	if np.sum(world) == 0:
-	# 		# print("max = " + repr(np.sum(world)))
-	# 		# print("Game is over. Agent0 was not able to catch other agents before they collected all rewards! :)")
-	# 		steps.append(counter)
-	# 		totalRewards.append(jointReward)
-	# 		record.append(1)
-	# 		break
-	# 	elif agent0 == agent1 or agent0 == agent2:
-	# 		# locationWorld[agent0[0]][agent0[1]] = 9
-	# 		# print("Game is over. Agent0 has caught an agent! >:)")
-	# 		steps.append(counter)
-	# 		totalRewards.append(jointReward)
-	# 		record.append(0)
-	# 		break
 
 	# plt.plot(range(0,total), steps)
 	# plt.show()
