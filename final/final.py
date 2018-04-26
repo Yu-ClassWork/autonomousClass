@@ -78,9 +78,21 @@ def left(stateX, stateY, world):	# up 4
 		print("Couldn't move.")
 	return newStateX, newStateY
 
-# def clearDanger(stateX, stateY, world):
+def clearDanger(stateX, stateY, world):
+	temp = world[stateX][stateY]
+	if temp == 5: # danger & victim
+		world[stateX][stateY] = 4 # victim is left
+	else: # just danger
+		world[stateX][stateY] = 2 # cleared danger
+	return stateX, stateY, world
 
-# def extractVictim(stateX, stateY, world):
+def extractVictim(stateX, stateY, world):
+	temp = world[stateX][stateY]
+	if temp == 5: # danger & victim
+		world[stateX][stateY] = 3 # danger is left
+	else: # just danger
+		world[stateX][stateY] = 2 # cleared victim
+	return stateX, stateY, world
 
 def doAction(direction, stateX, stateY, world):
 	if direction == 1:		# right
@@ -91,18 +103,18 @@ def doAction(direction, stateX, stateY, world):
 		newStateX, newStateY = down(stateX, stateY, world)
 	elif direction == 4:	# up
 		newStateX, newStateY = left(stateX, stateY, world)
-	elif direction == 0:
+	elif direction == 0:	# stop
 		newStateX, newStateY = still(stateX, stateY, world)
-	elif direction == 5:
-		newStateX, newStateY = clearDanger(stateX, stateY, world)
-	elif direction == 6:
-		newStateX, newStateY = extractVictim(stateX,stateY, world)
+	elif direction == 5:	# clear danger if robot
+		newStateX, newStateY, world = clearDanger(stateX, stateY, world)
+	elif direction == 6:	# extract victim if human
+		newStateX, newStateY, world = extractVictim(stateX,stateY, world)
 	else:
 		newStateX = stateX
 		newStateY = stateY
 		print("Not an action. Stayed still!")
 
-	return newStateX, newStateY
+	return newStateX, newStateY, world
 
 def findPossibleMovement(stateX, stateY, world):
 	global m, n
@@ -131,12 +143,80 @@ def findPossibleMovement(stateX, stateY, world):
 		actions.append(-1)
 	return actions
 
+def calcRewards(state, action, statePrime, agentType):
+	rewards = 0
+	# agent is a human
+	if state == 1 and statePrime == 1 and agentType == 0:
+		rewards = -1
+	if state == 1 and statePrime == 2 and agentType == 0:
+		rewards = -1
+	if state == 1 and statePrime == 3 and agentType == 0:
+		rewards = -1
+	if state == 1 and statePrime == 4 and agentType == 0:
+		rewards = -1
+	if state == 1 and statePrime == 5 and agentType == 0:
+		rewards = -1
+	if state == 2 and statePrime == 1 and agentType == 0:
+		rewards = -1
+	if state == 2 and statePrime == 2 and agentType == 0:
+		rewards = -1
+	if state == 2 and statePrime == 3 and agentType == 0:
+		rewards = -1
+	if state == 2 and statePrime == 4 and agentType == 0:
+		rewards = -1
+	if state == 2 and statePrime == 5 and agentType == 0:
+		rewards = -1
+	if state == 3 and statePrime == 1 and agentType == 0:
+		rewards = -1
+	if state == 3 and statePrime == 2 and agentType == 0:
+		rewards = -1
+	if state == 3 and statePrime == 3 and agentType == 0:
+		
+	if state == 3 and statePrime == 4 and agentType == 0:
+	if state == 3 and statePrime == 5 and agentType == 0:
+	if state == 4 and statePrime == 1 and agentType == 0:
+	if state == 4 and statePrime == 3 and agentType == 0:
+	if state == 4 and statePrime == 4 and agentType == 0:
+	if state == 4 and statePrime == 5 and agentType == 0:
+	if state == 5 and statePrime == 1 and agentType == 0:
+	if state == 5 and statePrime == 2 and agentType == 0:
+	if state == 5 and statePrime == 3 and agentType == 0:
+	if state == 5 and statePrime == 4 and agentType == 0:
+	if state == 5 and statePrime == 5 and agentType == 0:
+	# agent is a robot
+	if state == 1 and statePrime == 1 and agentType == 1:
+	if state == 1 and statePrime == 2 and agentType == 1:
+	if state == 1 and statePrime == 3 and agentType == 1:
+	if state == 1 and statePrime == 4 and agentType == 1:
+	if state == 1 and statePrime == 5 and agentType == 1:
+	if state == 2 and statePrime == 1 and agentType == 1:
+	if state == 2 and statePrime == 2 and agentType == 1:
+	if state == 2 and statePrime == 3 and agentType == 1:
+	if state == 2 and statePrime == 4 and agentType == 1:
+	if state == 2 and statePrime == 5 and agentType == 1:
+	if state == 3 and statePrime == 1 and agentType == 1:
+	if state == 3 and statePrime == 2 and agentType == 1:
+	if state == 3 and statePrime == 3 and agentType == 1:
+	if state == 3 and statePrime == 4 and agentType == 1:
+	if state == 3 and statePrime == 5 and agentType == 1:
+	if state == 4 and statePrime == 1 and agentType == 1:
+	if state == 4 and statePrime == 3 and agentType == 1:
+	if state == 4 and statePrime == 4 and agentType == 1:
+	if state == 4 and statePrime == 5 and agentType == 1:
+	if state == 5 and statePrime == 1 and agentType == 1:
+	if state == 5 and statePrime == 2 and agentType == 1:
+	if state == 5 and statePrime == 3 and agentType == 1:
+	if state == 5 and statePrime == 4 and agentType == 1:
+	if state == 5 and statePrime == 5 and agentType == 1:
+	
+	
 
 if __name__ == '__main__':
 	# state: grid world
 	# actionR: up:4, down:2, left:3, right:1, stayStill:0, clearDanger:5
 	# actionH: up:4, down:2, left:3, right:1, stayStill:0, extractVictim:6
 	# WORLD description: 0:can't move, 1:can move, 2:node, 3:danger, 4:victim, 5:danger & victim
+	# agent = [x,y,agentType] agentType 0 = human; agentType 1 = robot
 
 	# Initialize Worlds and Agents
 	world1 = createGrid(1)	# create worlds
@@ -146,9 +226,9 @@ if __name__ == '__main__':
 	# print('\n'.join([''.join(['{:4}'.format(item) for item in row]) for row in world1]))
 	# print('\n'.join([''.join(['{:4}'.format(item) for item in row]) for row in world2]))
 	# print('\n'.join([''.join(['{:4}'.format(item) for item in row]) for row in world3]))
-	agent1 = [3,3]	# initial location of agents
-	agent2 = [1,0]
-	agent3 = [1,0]
+	agent1 = [3,3,0]	# initial location of agents
+	agent2 = [1,0,1]
+	agent3 = [1,0,1]
 	SAS1 = [0,0,0]	# keep track of state action state' for rewards
 	SAS2 = [0,0,0]
 	SAS3 = [0,0,0]
@@ -159,20 +239,31 @@ if __name__ == '__main__':
 	SAS1[0] = possibleMovement1[0]
 
 	# Collect Observation
-	observationTemp = findPossibleMovement(agent1[0], agent1[1], world1)
-	observation = observationTemp[0]
+	observation = possibleMovement1[0]
 
 	# TODO: take an action
-	if observation == 4:
-		action = 6
-	elif observation == 3:
-		action = 5
-	elif observation == 5:
-		action = 5 & 6 # TODO: fix this for both depending on agent
+	if observation == 4: # victim is present
+		if agent1[2] = 0: # agent is a human
+			SAS1[1] = 6
+		else: # agent is a robot
+			SAS1[1] = # TODO: add what a robot does if it see's victim
+	elif observation == 3: # danger is present
+		if agent1[2] == 1: # agent is a robot
+			SAS1[1] = 5
+		else: # agent is a human
+			SAS1[1] = # TODO: add what to do if human see's danger
+	elif observation == 5: # danger & victim are present
+		if agent1[2] == 0: # agent is a human
+			SAS1[1] = 6 # extract victim
+		else: # agent is a robot
+			SAS1[1] = 5 # clear danger
 	else:
+		SAS1[1] = # TODO: do greedy policy
 
-	SAS1[1] = # TODO: place action in here
-
+	newStateX, newStateY, world = doAction(SAS1[1], agent1[0], agent1[1], world1)
+	tempMovements = findPossibleMovement(agnet1[0], agent1[1], world1)
+	SAS1[2] = tempMovements[0]
+	calcRewards(SAS1[0], SAS1[1], SAS1[2], agent1[2])
 
 	raw_input()
 
