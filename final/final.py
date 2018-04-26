@@ -198,32 +198,57 @@ def calcRewards(state, action, statePrime, agentType):
 		rewards = -50
 	# agent is a robot
 	if state == 1 and statePrime == 1 and agentType == 1:
+		rewards = -1
 	if state == 1 and statePrime == 2 and agentType == 1:
+		rewards = -1
 	if state == 1 and statePrime == 3 and agentType == 1:
+		rewards = -1
 	if state == 1 and statePrime == 4 and agentType == 1:
+		rewards = -1
 	if state == 1 and statePrime == 5 and agentType == 1:
+		rewards = -1
 	if state == 2 and statePrime == 1 and agentType == 1:
+		rewards = -1
 	if state == 2 and statePrime == 2 and agentType == 1:
+		rewards = -1
 	if state == 2 and statePrime == 3 and agentType == 1:
+		rewards = -1
 	if state == 2 and statePrime == 4 and agentType == 1:
+		rewards = -1
 	if state == 2 and statePrime == 5 and agentType == 1:
+		rewards = -1
 	if state == 3 and statePrime == 1 and agentType == 1:
+		rewards = -1
 	if state == 3 and statePrime == 2 and agentType == 1:
+		rewards = 50
 	if state == 3 and statePrime == 3 and agentType == 1:
+		rewards = -1
 	if state == 3 and statePrime == 4 and agentType == 1:
+		rewards = -1
 	if state == 3 and statePrime == 5 and agentType == 1:
+		rewards = -1
 	if state == 4 and statePrime == 1 and agentType == 1:
+		rewards = -1
 	if state == 4 and statePrime == 2 and agentType == 0:
+		rewards = -1
 	if state == 4 and statePrime == 3 and agentType == 1:
+		rewards = -1
 	if state == 4 and statePrime == 4 and agentType == 1:
+		rewards = -1
 	if state == 4 and statePrime == 5 and agentType == 1:
+		rewards = -1
 	if state == 5 and statePrime == 1 and agentType == 1:
+		rewards = -1
 	if state == 5 and statePrime == 2 and agentType == 1:
+		rewards = 50
 	if state == 5 and statePrime == 3 and agentType == 1:
+		rewards = -1
 	if state == 5 and statePrime == 4 and agentType == 1:
+		rewards = 50
 	if state == 5 and statePrime == 5 and agentType == 1:
-	
-	
+		rewards = -1
+	return rewards
+
 
 if __name__ == '__main__':
 	# state: grid world
@@ -277,7 +302,7 @@ if __name__ == '__main__':
 	newStateX, newStateY, world = doAction(SAS1[1], agent1[0], agent1[1], world1)
 	tempMovements = findPossibleMovement(agnet1[0], agent1[1], world1)
 	SAS1[2] = tempMovements[0]
-	calcRewards(SAS1[0], SAS1[1], SAS1[2], agent1[2])
+	rewards = calcRewards(SAS1[0], SAS1[1], SAS1[2], agent1[2])
 
 	raw_input()
 
