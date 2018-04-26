@@ -151,38 +151,51 @@ def calcRewards(state, action, statePrime, agentType):
 	if state == 1 and statePrime == 2 and agentType == 0:
 		rewards = -1
 	if state == 1 and statePrime == 3 and agentType == 0:
-		rewards = -1
+		rewards = -50
 	if state == 1 and statePrime == 4 and agentType == 0:
 		rewards = -1
 	if state == 1 and statePrime == 5 and agentType == 0:
-		rewards = -1
+		rewards = -50
 	if state == 2 and statePrime == 1 and agentType == 0:
 		rewards = -1
 	if state == 2 and statePrime == 2 and agentType == 0:
 		rewards = -1
 	if state == 2 and statePrime == 3 and agentType == 0:
-		rewards = -1
+		rewards = -50
 	if state == 2 and statePrime == 4 and agentType == 0:
 		rewards = -1
 	if state == 2 and statePrime == 5 and agentType == 0:
-		rewards = -1
+		rewards = -50
 	if state == 3 and statePrime == 1 and agentType == 0:
 		rewards = -1
 	if state == 3 and statePrime == 2 and agentType == 0:
 		rewards = -1
 	if state == 3 and statePrime == 3 and agentType == 0:
-		
+		rewards = -50
 	if state == 3 and statePrime == 4 and agentType == 0:
+		rewards = -1
 	if state == 3 and statePrime == 5 and agentType == 0:
+		rewards = -50
 	if state == 4 and statePrime == 1 and agentType == 0:
+		rewards = -1
+	if state == 4 and statePrime == 2 and agentType == 0:
+		rewards = 100
 	if state == 4 and statePrime == 3 and agentType == 0:
+		rewards = -50
 	if state == 4 and statePrime == 4 and agentType == 0:
+		rewards = -1
 	if state == 4 and statePrime == 5 and agentType == 0:
+		rewards = -50
 	if state == 5 and statePrime == 1 and agentType == 0:
+		rewards = -1
 	if state == 5 and statePrime == 2 and agentType == 0:
+		rewards = 100
 	if state == 5 and statePrime == 3 and agentType == 0:
+		rewards = -50
 	if state == 5 and statePrime == 4 and agentType == 0:
+		rewards = -1
 	if state == 5 and statePrime == 5 and agentType == 0:
+		rewards = -50
 	# agent is a robot
 	if state == 1 and statePrime == 1 and agentType == 1:
 	if state == 1 and statePrime == 2 and agentType == 1:
@@ -200,6 +213,7 @@ def calcRewards(state, action, statePrime, agentType):
 	if state == 3 and statePrime == 4 and agentType == 1:
 	if state == 3 and statePrime == 5 and agentType == 1:
 	if state == 4 and statePrime == 1 and agentType == 1:
+	if state == 4 and statePrime == 2 and agentType == 0:
 	if state == 4 and statePrime == 3 and agentType == 1:
 	if state == 4 and statePrime == 4 and agentType == 1:
 	if state == 4 and statePrime == 5 and agentType == 1:
