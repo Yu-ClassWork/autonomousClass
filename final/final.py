@@ -503,7 +503,6 @@ if __name__ == '__main__':
 			user_input = raw_input("exit? [y/N]")
 
 			doneFlag = finished(world1)
-			# TODO: check if finished function works
 			if doneFlag == 1:
 				break
 
