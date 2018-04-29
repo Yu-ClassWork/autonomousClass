@@ -437,7 +437,6 @@ if __name__ == '__main__':
 						temp = possibleMovement1.index(4) # if there is a victim only node next to me
 						SAS1[1] = temp
 			# get action
-			# TODO: figure out how to not get stuck in a state because of 6
 			# TODO: add multiple agents
 			# TODO: make robots do the opposite action of humans if possible
 
