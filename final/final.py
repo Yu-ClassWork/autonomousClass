@@ -313,8 +313,9 @@ if __name__ == '__main__':
 					SAS1[1] = 6
 				else: # agent is a robot
 					if 6 in possibleMovement1:
-						temp = possibleMovement1.index(6) # already visited node
-						SAS1[1] = temp
+						temp = np.where(possibleMovement1 == 6)[0] # already visited node
+						randTemp = random.randint(0,len(temp))
+						SAS1[1] = randTemp
 					if 1 in possibleMovement1:
 						temp = possibleMovement1.index(1) # movement node
 						SAS1[1] = temp
@@ -333,8 +334,9 @@ if __name__ == '__main__':
 					SAS1[1] = 5
 				else: # agent is a human
 					if 6 in possibleMovement1:
-						temp = possibleMovement1.index(6) # already visited node
-						SAS1[1] = temp
+						temp = np.where(possibleMovement1 == 6)[0] # already visited node
+						randTemp = random.randint(0,len(temp))
+						SAS1[1] = randTemp
 					if 1 in possibleMovement1:
 						temp = possibleMovement1.index(1) # movement node
 						SAS1[1] = temp
@@ -354,8 +356,9 @@ if __name__ == '__main__':
 			else:
 				if agent1[2] == 1: # agent is a robot
 					if 6 in possibleMovement1:
-						temp = possibleMovement1.index(6) # already visited node
-						SAS1[1] = temp
+						temp = np.where(possibleMovement1 == 6)[0] # already visited node
+						randTemp = random.randint(0,len(temp))
+						SAS1[1] = randTemp
 					if 1 in possibleMovement1:
 						temp = possibleMovement1.index(1) # movement node
 						SAS1[1] = temp
@@ -371,8 +374,9 @@ if __name__ == '__main__':
 				else: # agent is a human
 					if 6 in possibleMovement1:
 						print("1")
-						temp = possibleMovement1.index(6) # already visited node
-						SAS1[1] = temp
+						temp = np.where(possibleMovement1 == 6)[0] # already visited node
+						randTemp = random.randint(0,len(temp))
+						SAS1[1] = randTemp
 					if 1 in possibleMovement1:
 						print("2")
 						temp = possibleMovement1.index(1) # movement node
