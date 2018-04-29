@@ -270,6 +270,19 @@ def calcRewards(state, action, statePrime, agentType):
 		rewards = -1
 	return rewards
 
+def finished(world):
+	finsh = []
+	finish.append((1 in world))
+	finish.append((2 in world))
+	finish.append((3 in world))
+	finish.append((4 in world))
+	finish.append((5 in world))
+	if finish[:] == False:
+		done = 1
+	else:
+		done = 0
+	return done
+
 
 if __name__ == '__main__':
 	# state: grid world
@@ -407,6 +420,11 @@ if __name__ == '__main__':
 			print('\n'.join([''.join(['{:4}'.format(item) for item in row]) for row in world1]))
 
 			user_input = raw_input("exit? [y/N]")
+
+			doneFlag = finished(world1)
+			if doneFlag == 1:
+				user_input == "y"
+
 
 	# plt.plot(range(0,total), steps)
 	# plt.show()
