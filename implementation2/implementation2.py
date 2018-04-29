@@ -3,249 +3,242 @@
 import math
 import matplotlib.pyplot as plt
 import numpy as np
-import random
+from random import *
 
-# Joey Velez-Ginorio
-# MDP Implementation
-# ---------------------------------
-# - Includes BettingGame example
+global m, n
+m = 13
+n = 18
 
-class MDP(object):
-	""" 
-		Defines an Markov Decision Process containing:
-		- States, s 
-		- Actions, a
-		- Rewards, r(s,a)
-		- Transition Matrix, t(s,a,_s)
-		Includes a set of abstract methods for extended class will
-		need to implement.
-	"""
-	
-	def __init__(self, states=None, actions=None, rewards=None, transitions=None, 
-				discount=.99, tau=.01, epsilon=.01):
-		self.s = np.array(states)
-		self.a = np.array(actions)
-		self.r = np.array(rewards)
-		self.t = np.array(transitions)
-		self.discount = discount
-		self.tau = tau
-		self.epsilon = epsilon
+def createGrid(value):
+	global m, n
+	# Creates a list containing n lists, each of m items, all set to 0
+	matrix = [[value for x in range(m)] for y in range(n)]
+	return matrix
 
-		# Value iteration will update this
-		self.values = None
-		self.policy = None
-	
-	def isTerminal(self, state):
-		"""
-			Checks if MDP is in terminal state.
-		"""
-		raise NotImplementedError()
+def up(stateX, stateY):
+	global m
+	newStateX = stateX
+	newStateY = stateY +1
+	if newStateY >m-1:
+		newStateY = stateY
+	return newStateX, newStateY
 
-	def getTransitionStatesAndProbs(self, state, action):
-		"""
-			Returns the list of transition probabilities
-		"""
-		return self.t[state][action][:]
+def right(stateX, stateY):
+	global n
+	newStateX = stateX +1
+	newStateY = stateY
+	if newStateX >n-1:
+		newStateX = stateX
+	return newStateX, newStateY
 
-	def getReward(self, state):
-		"""
-			Gets reward for transition from state->action->nextState.
-		"""
-		return self.r[state]
+def down(stateX, stateY):
+	newStateX = stateX
+	newStateY = stateY -1
+	if newStateY <0:
+		newStateY = stateY
+	return newStateX, newStateY
 
-	def takeAction(self, state, action):
-		"""
-			Take an action in an MDP, return the next state
+def left(stateX, stateY):
+	newStateX = stateX -1
+	newStateY = stateY
+	if newStateX <0:
+		newStateX = stateX
+	return newStateX, newStateY
 
-			Chooses according to probability distribution of state transitions,
-			contingent on actions.
-		"""
-		return np.random.choice(self.s, p=self.getTransitionStatesAndProbs(state, action))	
+def collect(agent, rewards, prevAction):
+	global m,n
+	lock = 0
+	if (agent[0]+1) < n and lock == 0 and prevAction != 2:
+		if rewards[agent[0]+1][agent[1]] == 1:
+			action = 2
+			lock = 1
+	if (agent[1]+1) < m and lock == 0 and prevAction != 1:
+		if rewards[agent[0]][agent[1]+1] == 1:
+			action = 1
+			lock = 1
+	if (agent[0]-1) > -1 and lock == 0 and prevAction != 4:
+		if rewards[agent[0]-1][agent[1]] == 1:
+			action = 4
+			lock = 1
+	if (agent[1]-1) > -1 and lock == 0 and prevAction != 3:
+		if rewards[agent[0]][agent[1]-1] == 1:
+			action = 3
+			lock = 1
+	if lock == 0:
+		action = randint(1,4)
+	return action
+
+def collectRowCol(agent, rewards, prevAction):
+	global m,n
+	lock = 0
+	col = np.sum(rewards, axis=0)
+	row = np.sum(rewards, axis=1)
+	rowSumDown = 0
+	rowSumUp = 0
+	colSumRight = 0
+	colSumLeft = 0
+	for i in range(agent[0]+1, n):
+		rowSumDown = rowSumDown + row[i]
+	for i in range(0, agent[0]):
+		rowSumUp = rowSumUp + row[i]
+	for i in range(agent[1]+1, m):
+		colSumRight = colSumRight + col[i]
+	for i in range(0, agent[1]):
+		colSumLeft = colSumLeft + col[i]
+	sectorRewards = [rowSumDown, rowSumUp, colSumRight, colSumLeft]
+	temp = max(sectorRewards)
+	locationMax = [i for i, j in enumerate(sectorRewards) if j == temp]
+	if locationMax[0] == 0 and prevAction != 2:
+		action = 2
+	elif locationMax[0] == 1 and prevAction != 4:
+		action = 4
+	elif locationMax[0] == 2 and prevAction != 1:
+		action = 1
+	elif locationMax[0] == 3 and prevAction != 3:
+		action = 3
+	else:
+		action = randint(1,4)
+	return action
 
 
-	def valueIteration(self):
-		"""
-			Performs value iteration to populate the values of all states in
-			the MDP. 
+def move(direction, stateX, stateY):
+	if direction == 1:		# right
+		newStateX, newStateY = up(stateX, stateY)
+	elif direction == 2:	# down
+		newStateX, newStateY = right(stateX, stateY)
+	elif direction == 3:	# left
+		newStateX, newStateY = down(stateX, stateY)
+	elif direction == 4:	# up
+		newStateX, newStateY = left(stateX, stateY)
+	else:
+		newStateX = stateX
+		newStateY = stateY
 
-		"""
-		# Initialize V_0 to zero
-		self.values = np.zeros(len(self.s))
-		self.policy = np.zeros([len(self.s), len(self.a)])
-		policy_switch = 0
+	return newStateX, newStateY
 
-		# Loop until convergence
-		while True:
-			# To be used for convergence check
-			oldValues = np.copy(self.values)
-			for i in range(len(self.s)-1):
-				self.values[i] = self.r[i] + np.max(self.discount * \
-							np.dot(self.t[i][:][:], self.values))
+def agentMovement(agent, locations, rewards, prevAction, type):
+	# type == 0: random policy
+	# type == 1: run then left, down, right, up
+	# type == 2: run then go on row/column with most rewards
+	global m,n
+	lock = 0
+	if type == 0:
+		action = randint(1,4)
+	else:
+		if (agent[0]+1) < n and (agent[1]+1) < m:
+			if locations[agent[0]+1][agent[1]] == 8 or locations[agent[0]+1][agent[1]+1]:
+				action = 4
+				lock = 1
+		if (agent[1]+1) < m and (agent[0]-1) > -1:
+			if locations[agent[0]][agent[1]+1] == 8 or locations[agent[0]-1][agent[1]+1]:
+				action = 3
+				lock = 1
+		if (agent[0]-1) > -1 and (agent[1]-1) > -1:
+			if locations[agent[0]-1][agent[1]] == 8 or locations[agent[0]-1][agent[1]-1]:
+				action = 2
+				lock = 1
+		if (agent[1]-1) > -1 and (agent[0]+1) < n:
+			if locations[agent[0]][agent[1]-1] == 8 or locations[agent[0]+1][agent[1]-1]:
+				action = 1
+				lock = 1
+		if lock == 0:
+			if type == 1:
+				action = collect(agent, rewards, prevAction)
+			elif type == 2:
+				action = collectRowCol(agent, rewards, prevAction)
+			else:
+				print("Not a policy. Reassign in code")
 
-			# Check Convergence
-			if np.max(np.abs(self.values - oldValues)) <= self.epsilon:
-				break
+	agent[0], agent[1] = move(action, agent[0], agent[1])
+	return agent, action
 
-	def extractPolicy(self):
-		"""
-			Extract policy from values after value iteration runs.
-		"""
-		self.policy = np.zeros([len(self.s),len(self.a)])
-		for i in range(len(self.s)-1):
-			state_policy = np.zeros(len(self.a))
-			state_policy = self.r[i] + self.discount* \
-						np.dot(self.t[i][:][:], self.values)
+def updateWorld(locationWorld, rewardWorld, numAgents, agents):
+	locationWorld = createGrid(0)
+	locationWorld[agents[0][0]][agents[0][1]] = 8
+	for i in range(1,len(agents)):
+		locationWorld[agents[i][0]][agents[i][1]] = 6
+	rewardWorld[agent1[0]][agent1[1]] = 0
+	rewardWorld[agent2[0]][agent2[1]] = 0
+	return locationWorld, rewardWorld
 
-			# Softmax the policy			
-			state_policy -= np.max(state_policy)
-			state_policy = np.exp(state_policy / float(self.tau))
-			state_policy /= state_policy.sum()
-			self.policy[i] = state_policy
-
-	def simulate(self, state):
-		""" 
-			Runs the solver for the MDP, conducts value iteration, extracts policy,
-			then runs simulation of problem.
-
-			NOTE: Be sure to run value iteration (solve values for states) and to
-		 	extract some policy (fill in policy vector) before running simulation
-		"""
-		# Run simulation using policy until terminal condition met
-		
-		while not self.isTerminal(state):
-			# Determine which policy to use (non-deterministic)
-			policy = self.policy[np.where(self.s == state)[0][0]]
-			p_policy = self.policy[np.where(self.s == state)[0][0]] / \
-						self.policy[np.where(self.s == state)[0][0]].sum()
-
-			# Get the parameters to perform one move
-			stateIndex = np.where(self.s == state)[0][0]
-			policyChoice = np.random.choice(policy, p=p_policy)
-			actionIndex = np.random.choice(np.array(np.where(self.policy[state][:] == policyChoice)).ravel())
-
-			# Take an action, move to next state
-			nextState = self.takeAction(stateIndex, actionIndex)
-
-			print("In state: {}, taking action: {}, moving to state: {}".format(state, self.a[actionIndex], nextState))
-
-			# End game if terminal state reached
-			state = int(nextState)
-			if self.isTerminal(state):
-				# print "Terminal state: {} has been reached. Simulation over.".format(state)
-				return state
-
-class BettingGame(MDP):
-	""" 
-		Defines the Betting Game:
-
-		Problem: A gambler has the chance to make bets on the outcome of 
-		a fair coin flip. If the coin is heads, the gambler wins as many
-		dollars back as was staked on that particular flip - otherwise
-		the money is lost. The game is won if the gambler obtains $100,
-		and is lost if the gambler runs out of money (has 0$). This gambler
-		did some research on MDPs and has decided to enlist them to assist
-		in determination of how much money should be bet on each turn. Your 
-		task is to build that MDP!
-
-		Params: 
-				pHead: Probability of coin flip landing on heads
-					- Use .5 for fair coin, else choose a bias [0,1]
-	"""
-
-	def __init__(self, pHeads=.5, discount=.99, epsilon=.1, tau=.0001):
-		MDP.__init__(self,discount=discount,tau=tau,epsilon=epsilon)
-		self.pHeads = pHeads
-		self.setBettingGame(pHeads)
-		self.valueIteration()
-		self.extractPolicy()
-
-		# Edge case fix: Policy for $1
-		self.policy[1][:] = 0
-		self.policy[1][1] = 1.0
-
-	def isTerminal(self, state):
-		"""
-			Checks if MDP is in terminal state.
-		"""
-		return True if state is 100 or state is 0 else False
-
-	def setBettingGame(self, pHeads=.5):
-		""" 
-			Initializes the MDP to the starting conditions for 
-			the betting game. 
-
-			Params:
-				pHeads = Probability that coin lands on head
-					- .5 for fair coin, otherwise choose bias
-
-		"""
-		# This is how much we're starting with
-		self.pHeads = pHeads
-		# Initialize all possible states
-		self.s = np.arange(102)
-		# Initialize possible actions
-		self.a = np.arange(101)
-		# Initialize rewards
-		self.r = np.zeros(101)
-		self.r[0] = -5
-		self.r[100] = 10
-
-		# Initialize transition matrix
-		temp = np.zeros([len(self.s),len(self.a),len(self.s)])
-
-		# List comprehension using tHelper to determine probabilities for each index
-		self.t = [self.tHelper(i[0], i[1], i[2], self.pHeads) for i,x in np.ndenumerate(temp)]
-		self.t = np.reshape(self.t, np.shape(temp))
-		
-		for x in range(len(self.a)):
-		# Remembr to add -1 to value it, and policy extract
-			# Send the end game states to the death state!
-			self.t[100][x] = np.zeros(len(self.s))
-			self.t[100][x][101] = 1.0
-			self.t[0][x] = np.zeros(len(self.s))
-			self.t[0][x][101] = 1.0
-
-	def tHelper(self, x, y, z , pHeads):
-		""" 
-			Helper function to be used in a list comprehension to quickly
-			generate the transition matrix. Encodes the necessary conditions
-			to compute the necessary probabilities.
-
-			Params:
-			x,y,z indices
-			pHeads = probability coin lands on heads
-		"""
-		# If you bet no money, you will always have original amount
-		if x + y is z and y is 0:
-			return 1.0
-
-		# If you bet more money than you have, no chance of any outcome
-		elif y > x and x is not z:
-			return 0
-
-		# If you bet more money than you have, returns same state with 1.0 prob.
-		elif y > x and x is z:
-			return 1.0
-
-		# Chance you lose
-		elif x - y is z:
-			return 1.0 - pHeads
-
-		# Chance you win
-		elif x + y is z:
-			return pHeads
-
-		# Edge Case: Chance you win, and winnings go over 100
-		elif x + y > z and z is 100:
-			return pHeads
-
-		else:
-			return 0 
-
-		return 0
-
-def main():
-	BettingGame()
 
 if __name__ == '__main__':
-	main()
+	# behaviors: try to kick, run away
+	# agents: 1 protector, 2 kickers
+	# state: grid world
+	# action: up down left right staystill
+	totalRewards = []
+	record = []
+	steps = []
+	total = 300
+	for i in range(0,total):
+		world = createGrid(1)
+		world[0][0] = 0
+		# print('\n'.join([''.join(['{:4}'.format(item) for item in row]) for row in world]))
+		locationWorld = createGrid(0)
+		stateX = 0
+		stateY = 0
+		newStateX = 0
+		newStateY = 0
+		agent0 = [n-1,m-1]
+		agent1 = [0,0]
+		agent2 = [0,0]
+		jointReward = 0
+		numAgents = 3
+		action = 0
+		counter = 0
+		while 1:
+			# print(repr(stateX) + repr(stateY))
+			stateX = newStateX
+			stateY = newStateY
+			# raw_input()
+			agent0, action0 = agentMovement(agent0, locationWorld, world, action, 0)
+			agent1, action1 = agentMovement(agent1, locationWorld, world, action, 1)
+			agent2, action2 = agentMovement(agent2, locationWorld, world, action1, 1)
+			tempAgent0 = world[agent0[0]][agent0[1]]
+			if world[agent1[0]][agent1[1]] == 1:
+				jointReward = jointReward + 1
+			if world[agent2[0]][agent2[1]] == 1:
+				jointReward = jointReward + 1
+			agents = [agent0, agent1, agent2]
+			locationWorld, world = updateWorld(locationWorld, world, numAgents, agents)
+			
+			# print('\n')
+			# print('\n'.join([''.join(['{:4}'.format(item) for item in row]) for row in locationWorld]))
+			# print('\n')
+			# print('\n'.join([''.join(['{:4}'.format(item) for item in row]) for row in world]))
+			counter = counter + 1
+
+			if np.sum(world) == 0:
+				# print("max = " + repr(np.sum(world)))
+				# print("Game is over. Agent0 was not able to catch other agents before they collected all rewards! :)")
+				steps.append(counter)
+				totalRewards.append(jointReward)
+				record.append(1)
+				break
+			elif agent0 == agent1 or agent0 == agent2:
+				# locationWorld[agent0[0]][agent0[1]] = 9
+				# print("Game is over. Agent0 has caught an agent! >:)")
+				steps.append(counter)
+				totalRewards.append(jointReward)
+				record.append(0)
+				break
+
+	plt.plot(range(0,total), steps)
+	plt.show()
+	plt.plot(range(0,total), totalRewards)
+	plt.show()
+	plt.plot(range(0,total), record)
+	plt.show()
+	print(np.mean(steps))
+	print(np.mean(totalRewards))
+	print(np.mean(record)*100)
+
+
+	# print('\n LOCATIONS')
+	# print('\n'.join([''.join(['{:4}'.format(item) for item in row]) for row in locationWorld]))
+	# print('\n REWRADS')
+	# print('\n'.join([''.join(['{:4}'.format(item) for item in row]) for row in world]))
+
+
+	# KTC()
