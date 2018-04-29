@@ -42,16 +42,24 @@ def createFig2(world):
 def still(stateX, stateY, world):
 	newStateX = stateX
 	newStateY = stateY
-	return newStateX, newStateY
+	if world[stateX][stateY] == 2:
+		world[stateX][stateY] = 6
+	if world[stateX][stateY] == 1:
+		world[stateX][stateY] = 6
+	return newStateX, newStateY, world
 
 def up(stateX, stateY, world):		# right 1
 	global m
 	newStateX = stateX
-	newStateY = stateY +1
-	if newStateY >m-1:
+	newStateY = stateY + 1
+	if newStateY > m-1:
 		newStateY = stateY
 		print("Couldn't move.")
-	return newStateX, newStateY
+	if world[stateX][stateY] == 2:
+		world[stateX][stateY] = 6
+	if world[stateX][stateY] == 1:
+		world[stateX][stateY] = 6
+	return newStateX, newStateY, world
 
 def right(stateX, stateY, world):	# down 2
 	global n
@@ -60,7 +68,11 @@ def right(stateX, stateY, world):	# down 2
 	if newStateX >n-1:
 		newStateX = stateX
 		print("Couldn't move.")
-	return newStateX, newStateY
+	if world[stateX][stateY] == 2:
+		world[stateX][stateY] = 6
+	if world[stateX][stateY] == 1:
+		world[stateX][stateY] = 6
+	return newStateX, newStateY, world
 
 def down(stateX, stateY, world):	# left 3
 	newStateX = stateX
@@ -68,7 +80,11 @@ def down(stateX, stateY, world):	# left 3
 	if newStateY <0:
 		newStateY = stateY
 		print("Couldn't move.")
-	return newStateX, newStateY
+	if world[stateX][stateY] == 2:
+		world[stateX][stateY] = 6
+	if world[stateX][stateY] == 1:
+		world[stateX][stateY] = 6
+	return newStateX, newStateY, world
 
 def left(stateX, stateY, world):	# up 4
 	newStateX = stateX -1
@@ -76,14 +92,18 @@ def left(stateX, stateY, world):	# up 4
 	if newStateX <0:
 		newStateX = stateX
 		print("Couldn't move.")
-	return newStateX, newStateY
+	if world[stateX][stateY] == 2:
+		world[stateX][stateY] = 6
+	if world[stateX][stateY] == 1:
+		world[stateX][stateY] = 6
+	return newStateX, newStateY, world
 
 def clearDanger(stateX, stateY, world):
 	temp = world[stateX][stateY]
 	if temp == 5: # danger & victim
 		world[stateX][stateY] = 4 # victim is left
 	else: # just danger
-		world[stateX][stateY] = 2 # cleared danger
+		world[stateX][stateY] = 6 # cleared danger
 	return stateX, stateY, world
 
 def extractVictim(stateX, stateY, world):
@@ -91,30 +111,31 @@ def extractVictim(stateX, stateY, world):
 	if temp == 5: # danger & victim
 		world[stateX][stateY] = 3 # danger is left
 	else: # just danger
-		world[stateX][stateY] = 2 # cleared victim
+		world[stateX][stateY] = 6 # cleared victim
 	return stateX, stateY, world
 
 def doAction(direction, stateX, stateY, world):
 	if direction == 1:		# right
-		newStateX, newStateY = up(stateX, stateY, world)
+		newStateX, newStateY, newWorld = up(stateX, stateY, world)
 	elif direction == 2:	# down
-		newStateX, newStateY = right(stateX, stateY, world)
+		newStateX, newStateY, newWorld = right(stateX, stateY, world)
 	elif direction == 3:	# left
-		newStateX, newStateY = down(stateX, stateY, world)
+		newStateX, newStateY, newWorld = down(stateX, stateY, world)
 	elif direction == 4:	# up
-		newStateX, newStateY = left(stateX, stateY, world)
+		newStateX, newStateY, newWorld = left(stateX, stateY, world)
 	elif direction == 0:	# stop
-		newStateX, newStateY = still(stateX, stateY, world)
+		newStateX, newStateY, newWorld = still(stateX, stateY, world)
 	elif direction == 5:	# clear danger if robot
-		newStateX, newStateY, world = clearDanger(stateX, stateY, world)
+		newStateX, newStateY, newWorld = clearDanger(stateX, stateY, world)
 	elif direction == 6:	# extract victim if human
-		newStateX, newStateY, world = extractVictim(stateX,stateY, world)
+		newStateX, newStateY, newWorld = extractVictim(stateX,stateY, world)
 	else:
 		newStateX = stateX
 		newStateY = stateY
+		newWorld = world
 		print("Not an action. Stayed still!")
 
-	return newStateX, newStateY, world
+	return newStateX, newStateY, newWorld
 
 def findPossibleMovement(stateX, stateY, world):
 	global m, n
@@ -254,7 +275,7 @@ if __name__ == '__main__':
 	# state: grid world
 	# actionR: up:4, down:2, left:3, right:1, stayStill:0, clearDanger:5
 	# actionH: up:4, down:2, left:3, right:1, stayStill:0, extractVictim:6
-	# WORLD description: 0:can't move, 1:can move, 2:node, 3:danger, 4:victim, 5:danger & victim
+	# WORLD description: 0:can't move, 1:can move, 2:node, 3:danger, 4:victim, 5:danger & victim, 6: visited and cleared (also a node)
 	# agent = [x,y,agentType] agentType 0 = human; agentType 1 = robot
 
 	# Initialize Worlds and Agents
@@ -265,46 +286,120 @@ if __name__ == '__main__':
 	# print('\n'.join([''.join(['{:4}'.format(item) for item in row]) for row in world1]))
 	# print('\n'.join([''.join(['{:4}'.format(item) for item in row]) for row in world2]))
 	# print('\n'.join([''.join(['{:4}'.format(item) for item in row]) for row in world3]))
-	agent1 = [3,3,0]	# initial location of agents
+	agent1 = [3,3,0]	# initial location of agents (x,y,type)
 	agent2 = [1,0,1]
 	agent3 = [1,0,1]
 	SAS1 = [0,0,0]	# keep track of state action state' for rewards
 	SAS2 = [0,0,0]
 	SAS3 = [0,0,0]
+	totRewards = 0
+	user_input = "N"
+	while True:
+		if user_input == "y":
+			break
+		else:
+			# check possible movements
+			possibleMovement1 = findPossibleMovement(agent1[0], agent1[1], world1) # returns list [still, right, down, left, up]
+			# check possible movements
 
-	# Check Possible Movements
-	possibleMovement1 = findPossibleMovement(agent1[0], agent1[1], world1) # returns list [still, right, down, left, up]
+			SAS1[1] = possibleMovement1[0] # current state
+			observation = possibleMovement1[0] # Collect Observation
 
-	SAS1[0] = possibleMovement1[0]
+			print(repr(SAS1[1]))
+			# get action
+			temp = 0
+			if observation == 4: # victim is present
+				if agent1[2] == 0: # agent is a human
+					SAS1[1] = 6
+				else: # agent is a robot
+					if 6 in possibleMovement1:
+						temp = possibleMovement1.index(6) # already visited node
+						SAS1[1] = temp
+					if 1 in possibleMovement1:
+						temp = possibleMovement1.index(1) # movement node
+						SAS1[1] = temp
+					if 2 in possibleMovement1:
+						temp = possibleMovement1.index(2) # node that hasn't been visited
+						SAS1[1] = temp
+					if 3 in possibleMovement1:
+						temp = possibleMovement1.index(3) # if there is a danger node next to me
+						SAS1[1] = temp
+					if 5 in possibleMovement1:
+						temp = possibleMovement1.index(5) # if there is a danger & victim node next to me
+						SAS1[1] = temp
 
-	# Collect Observation
-	observation = possibleMovement1[0]
+			elif observation == 3: # danger is present
+				if agent1[2] == 1: # agent is a robot
+					SAS1[1] = 5
+				else: # agent is a human
+					if 6 in possibleMovement1:
+						temp = possibleMovement1.index(6) # already visited node
+						SAS1[1] = temp
+					if 1 in possibleMovement1:
+						temp = possibleMovement1.index(1) # movement node
+						SAS1[1] = temp
+					if 2 in possibleMovement1:
+						temp = possibleMovement1.index(2) # node that hasn't been visited
+						SAS1[1] = temp
+					if 4 in possibleMovement1:
+						temp = possibleMovement1.index(4) # if there is a victim only node next to me
+						SAS1[1] = temp
 
-	# TODO: take an action
-	if observation == 4: # victim is present
-		if agent1[2] = 0: # agent is a human
-			SAS1[1] = 6
-		else: # agent is a robot
-			SAS1[1] = # TODO: add what a robot does if it see's victim
-	elif observation == 3: # danger is present
-		if agent1[2] == 1: # agent is a robot
-			SAS1[1] = 5
-		else: # agent is a human
-			SAS1[1] = # TODO: add what to do if human see's danger
-	elif observation == 5: # danger & victim are present
-		if agent1[2] == 0: # agent is a human
-			SAS1[1] = 6 # extract victim
-		else: # agent is a robot
-			SAS1[1] = 5 # clear danger
-	else:
-		SAS1[1] = # TODO: do greedy policy
+			elif observation == 5: # danger & victim are present
+				if agent1[2] == 0: # agent is a human
+					SAS1[1] = 6 # extract victim
+				else: # agent is a robot
+					SAS1[1] = 5 # clear danger
+			
+			else:
+				if agent1[2] == 1: # agent is a robot
+					if 6 in possibleMovement1:
+						temp = possibleMovement1.index(6) # already visited node
+						SAS1[1] = temp
+					if 1 in possibleMovement1:
+						temp = possibleMovement1.index(1) # movement node
+						SAS1[1] = temp
+					if 2 in possibleMovement1:
+						temp = possibleMovement1.index(2) # node that hasn't been visited
+						SAS1[1] = temp
+					if 3 in possibleMovement1:
+						temp = possibleMovement1.index(3) # if there is a danger node next to me
+						SAS1[1] = temp
+					if 5 in possibleMovement1:
+						temp = possibleMovement1.index(5) # if there is a danger node next to me
+						SAS1[1] = temp
+				else: # agent is a human
+					if 6 in possibleMovement1:
+						print("1")
+						temp = possibleMovement1.index(6) # already visited node
+						SAS1[1] = temp
+					if 1 in possibleMovement1:
+						print("2")
+						temp = possibleMovement1.index(1) # movement node
+						SAS1[1] = temp
+					if 2 in possibleMovement1:
+						print("3")
+						temp = possibleMovement1.index(2) # node that hasn't been visited
+						SAS1[1] = temp
+					if 4 in possibleMovement1:
+						print("4")
+						temp = possibleMovement1.index(4) # if there is a victim only node next to me
+						SAS1[1] = temp
+			# get action
 
-	newStateX, newStateY, world = doAction(SAS1[1], agent1[0], agent1[1], world1)
-	tempMovements = findPossibleMovement(agnet1[0], agent1[1], world1)
-	SAS1[2] = tempMovements[0]
-	rewards = calcRewards(SAS1[0], SAS1[1], SAS1[2], agent1[2])
+			# print('\n'.join([''.join(['{:4}'.format(item) for item in row]) for row in world1]))
+			print("(x, y, action): " + repr(agent1[0]) + " " + repr(agent1[1]) + " " + repr(SAS1[1]))
+			agent1[0], agent1[1], world1[:] = doAction(SAS1[1], agent1[0], agent1[1], world1) # doing action
+			# print('\n'.join([''.join(['{:4}'.format(item) for item in row]) for row in world1]))
 
-	raw_input()
+			tempMovements = findPossibleMovement(agent1[0], agent1[1], world1) # getting next state
+			SAS1[2] = tempMovements[0] # saving next state
+			rewards = calcRewards(SAS1[0], SAS1[1], SAS1[2], agent1[2]) # getting instantaneous rewards
+			totRewards = totRewards + rewards # calculating total rewards
+			
+			print('\n'.join([''.join(['{:4}'.format(item) for item in row]) for row in world1]))
+
+			user_input = raw_input("exit? [y/N]")
 
 	# plt.plot(range(0,total), steps)
 	# plt.show()
