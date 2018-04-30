@@ -166,6 +166,11 @@ def findPossibleMovement(stateX, stateY, world):
 
 def calcRewards(state, action, statePrime, agentType):
 	rewards = 0
+	# print("hi")
+	# print(state)
+	# print(action)
+	# print(statePrime)
+	# print(agentType)
 	# agent is a human
 	if state == 1 and statePrime == 1 and agentType == 0:
 		rewards = -1
@@ -328,7 +333,9 @@ if __name__ == '__main__':
 	SAS2 = [0,0,0]
 	SAS3 = [0,0,0]
 	previous1 = []
+	previous2 = []
 
+	steps = 0
 	totRewards = 0
 	user_input = "N"
 	while True:
@@ -337,9 +344,11 @@ if __name__ == '__main__':
 		else:
 			# check possible movements
 			possibleMovement1 = findPossibleMovement(agent1[0], agent1[1], world1) # returns list [still, right, down, left, up]
+			possibleMovement2 = findPossibleMovement(agent2[0], agent2[1], world1) # returns list [still, right, down, left, up]
 			# check possible movements
 
-			SAS1[1] = possibleMovement1[0] # current state
+
+			SAS1[0] = possibleMovement1[0] # current state
 			observation = possibleMovement1[0] # Collect Observation
 
 			# get action
@@ -437,8 +446,6 @@ if __name__ == '__main__':
 						temp = possibleMovement1.index(4) # if there is a victim only node next to me
 						SAS1[1] = temp
 			# get action
-			# TODO: add multiple agents
-			# TODO: make robots do the opposite action of humans if possible
 
 			# print('\n'.join([''.join(['{:4}'.format(item) for item in row]) for row in world1]))
 			if lock == 0:
@@ -486,27 +493,186 @@ if __name__ == '__main__':
 			else:
 				previous1.append(SAS1[1])
 
-			print("actions: " + repr(previous1))
-			print("(x, y, action): " + repr(agent1[0]) + " " + repr(agent1[1]) + " " + repr(SAS1[1]))
+
+
+
+
+			SAS2[0] = possibleMovement2[0] # current state
+			observation = possibleMovement2[0] # Collect Observation
+
+			if observation == 4: # victim is present
+				if agent2[2] == 0: # agent is a human
+					lock = 1
+					SAS2[1] = 6
+				else: # agent is a robot
+					if 6 in possibleMovement2:
+						temp = possibleMovement2.index(6) # already visited node
+						SAS2[1] = temp
+					if 1 in possibleMovement2:
+						lock = 1
+						temp = possibleMovement2.index(1) # movement node
+						SAS2[1] = temp
+					if 2 in possibleMovement2:
+						lock = 1
+						temp = possibleMovement2.index(2) # node that hasn't been visited
+						SAS2[1] = temp
+					if 3 in possibleMovement2:
+						lock = 1
+						temp = possibleMovement2.index(3) # if there is a danger node next to me
+						SAS2[1] = temp
+					if 5 in possibleMovement2:
+						lock = 1
+						temp = possibleMovement2.index(5) # if there is a danger & victim node next to me
+						SAS2[1] = temp
+
+			elif observation == 3: # danger is present
+				if agent2[2] == 1: # agent is a robot
+					lock = 1
+					SAS2[1] = 5
+				else: # agent is a human
+					if 6 in possibleMovement2:
+						temp = possibleMovement2.index(6) # already visited node
+						SAS2[1] = temp
+					if 1 in possibleMovement2:
+						lock = 1
+						temp = possibleMovement2.index(1) # movement node
+						SAS2[1] = temp
+					if 2 in possibleMovement2:
+						lock = 1
+						temp = possibleMovement2.index(2) # node that hasn't been visited
+						SAS2[1] = temp
+					if 4 in possibleMovement2:
+						lock = 1
+						temp = possibleMovement2.index(4) # if there is a victim only node next to me
+						SAS2[1] = temp
+
+			elif observation == 5: # danger & victim are present
+				if agent2[2] == 0: # agent is a human
+					lock = 1
+					SAS2[1] = 6 # extract victim
+				else: # agent is a robot
+					lock = 1
+					SAS2[1] = 5 # clear danger
+			
+			else:
+				if agent2[2] == 1: # agent is a robot
+					if 6 in possibleMovement2:
+						temp = possibleMovement2.index(6) # already visited node
+						SAS2[1] = temp
+					if 1 in possibleMovement2:
+						lock = 1
+						temp = possibleMovement2.index(1) # movement node
+						SAS2[1] = temp
+					if 2 in possibleMovement2:
+						lock = 1
+						temp = possibleMovement2.index(2) # node that hasn't been visited
+						SAS2[1] = temp
+					if 3 in possibleMovement2:
+						lock = 1
+						temp = possibleMovement2.index(3) # if there is a danger node next to me
+						SAS2[1] = temp
+					if 5 in possibleMovement2:
+						lock = 1
+						temp = possibleMovement2.index(5) # if there is a danger node next to me
+						SAS2[1] = temp
+				else: # agent is a human
+					if 6 in possibleMovement2:
+						temp = possibleMovement2.index(6) # already visited node
+						SAS2[1] = temp
+					if 1 in possibleMovement2:
+						lock = 1
+						temp = possibleMovement2.index(1) # movement node
+						SAS2[1] = temp
+					if 2 in possibleMovement2:
+						lock = 1
+						temp = possibleMovement2.index(2) # node that hasn't been visited
+						SAS2[1] = temp
+					if 4 in possibleMovement2:
+						lock = 1
+						temp = possibleMovement2.index(4) # if there is a victim only node next to me
+						SAS2[1] = temp
+			# get action
+
+			# print('\n'.join([''.join(['{:4}'.format(item) for item in row]) for row in world1]))
+			if lock == 0:
+				lastMove = previous1.pop()
+				if lastMove == 1:
+					SAS1[1] = 3
+				elif lastMove == 2:
+					SAS1[1] = 4
+				elif lastMove == 3:
+					SAS1[1] = 1
+				elif lastMove == 4:
+					SAS1[1] = 2
+				elif lastMove == 5:
+					lastMove1 = previous1.pop()
+					if lastMove1 == 1:
+						SAS1[1] = 3
+					elif lastMove == 2:
+						SAS1[1] = 4
+					elif lastMove == 3:
+						SAS1[1] = 1
+					elif lastMove == 4:
+						SAS1[1] = 2
+				elif lastMove == 6:
+					lastMove1 = previous1.pop()
+					if lastMove1 == 1:
+						SAS1[1] = 3
+					elif lastMove == 2:
+						SAS1[1] = 4
+					elif lastMove == 3:
+						SAS1[1] = 1
+					elif lastMove == 4:
+						SAS1[1] = 2
+				elif lastMove == 0:
+					lastMove1 = previous1.pop()
+					if lastMove1 == 1:
+						SAS1[1] = 3
+					elif lastMove == 2:
+						SAS1[1] = 4
+					elif lastMove == 3:
+						SAS1[1] = 1
+					elif lastMove == 4:
+						SAS1[1] = 2
+				else:
+					print("something wrong!")
+			else:
+				previous1.append(SAS1[1])
+
+
+
+
+
+
+			# print("actions: " + repr(previous1))
+			# print("(x, y, action): " + repr(agent1[0]) + " " + repr(agent1[1]) + " " + repr(SAS1[1]))
 
 			agent1[0], agent1[1], world1[:] = doAction(SAS1[1], agent1[0], agent1[1], world1) # doing action
+			agent2[0], agent2[1], world1[:] = doAction(SAS2[1], agent2[0], agent2[1], world1) # doing action
+
 			# print('\n'.join([''.join(['{:4}'.format(item) for item in row]) for row in world1]))
 
 			tempMovements = findPossibleMovement(agent1[0], agent1[1], world1) # getting next state
 			SAS1[2] = tempMovements[0] # saving next state
 			rewards = calcRewards(SAS1[0], SAS1[1], SAS1[2], agent1[2]) # getting instantaneous rewards
 			totRewards = totRewards + rewards # calculating total rewards
+			# print("rewards:" + repr(rewards))
+			tempMovements = findPossibleMovement(agent2[0], agent2[1], world1) # getting next state
+			SAS2[2] = tempMovements[0] # saving next state
+			rewards = calcRewards(SAS2[0], SAS2[1], SAS2[2], agent2[2]) # getting instantaneous rewards
+			totRewards = totRewards + rewards # calculating total rewards
 			
 			print('\n'.join([''.join(['{:4}'.format(item) for item in row]) for row in world1]))
 
-			user_input = raw_input("exit? [y/N]")
-
+			# user_input = raw_input("exit? [y/N]")
+			steps = steps + 1
 			doneFlag = finished(world1)
 			if doneFlag == 1:
 				break
 
-
-	# plt.plot(range(0,total), steps)
+	print("steps: " + repr(steps))
+	print("rewards: " + repr(totRewards))
+	# plt.plot(range(0,1), steps)
 	# plt.show()
 	# plt.plot(range(0,total), totalRewards)
 	# plt.show()
