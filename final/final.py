@@ -103,7 +103,7 @@ def clearDanger(stateX, stateY, world):
 	if temp == 5: # danger & victim
 		world[stateX][stateY] = 4 # victim is left
 	else: # just danger
-		world[stateX][stateY] = 6 # cleared danger
+		world[stateX][stateY] = 2 # cleared danger
 	return stateX, stateY, world
 
 def extractVictim(stateX, stateY, world):
