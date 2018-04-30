@@ -347,303 +347,303 @@ if __name__ == '__main__':
 			possibleMovement2 = findPossibleMovement(agent2[0], agent2[1], world1) # returns list [still, right, down, left, up]
 			# check possible movements
 
-			if possibleMovement1[0] != 4:
-				SAS1[1] = randint(1,4)
-			else:
-				SAS1[1] = 6
-			if possibleMovement2[0] != 3:
-				SAS2[1] = randint(1,4)
-			else:
-				SAS2[1] = 5
+			# if possibleMovement1[0] != 4:
+			# 	SAS1[1] = randint(1,4)
+			# else:
+			# 	SAS1[1] = 6
+			# if possibleMovement2[0] != 3:
+			# 	SAS2[1] = randint(1,4)
+			# else:
+			# 	SAS2[1] = 5
 
 			SAS1[0] = possibleMovement1[0] # current state
-			# observation = possibleMovement1[0] # Collect Observation
+			observation = possibleMovement1[0] # Collect Observation
 
-			# # get action
-			# temp = 0
-			# lock = 0
-			# if observation == 4: # victim is present
-			# 	if agent1[2] == 0: # agent is a human
-			# 		lock = 1
-			# 		SAS1[1] = 6
-			# 	else: # agent is a robot
-			# 		if 6 in possibleMovement1:
-			# 			temp = possibleMovement1.index(6) # already visited node
-			# 			SAS1[1] = temp
-			# 		if 1 in possibleMovement1:
-			# 			lock = 1
-			# 			temp = possibleMovement1.index(1) # movement node
-			# 			SAS1[1] = temp
-			# 		if 2 in possibleMovement1:
-			# 			lock = 1
-			# 			temp = possibleMovement1.index(2) # node that hasn't been visited
-			# 			SAS1[1] = temp
-			# 		if 3 in possibleMovement1:
-			# 			lock = 1
-			# 			temp = possibleMovement1.index(3) # if there is a danger node next to me
-			# 			SAS1[1] = temp
-			# 		if 5 in possibleMovement1:
-			# 			lock = 1
-			# 			temp = possibleMovement1.index(5) # if there is a danger & victim node next to me
-			# 			SAS1[1] = temp
+			# get action
+			temp = 0
+			lock = 0
+			if observation == 4: # victim is present
+				if agent1[2] == 0: # agent is a human
+					lock = 1
+					SAS1[1] = 6
+				else: # agent is a robot
+					if 6 in possibleMovement1:
+						temp = possibleMovement1.index(6) # already visited node
+						SAS1[1] = temp
+					if 1 in possibleMovement1:
+						lock = 1
+						temp = possibleMovement1.index(1) # movement node
+						SAS1[1] = temp
+					if 2 in possibleMovement1:
+						lock = 1
+						temp = possibleMovement1.index(2) # node that hasn't been visited
+						SAS1[1] = temp
+					if 3 in possibleMovement1:
+						lock = 1
+						temp = possibleMovement1.index(3) # if there is a danger node next to me
+						SAS1[1] = temp
+					if 5 in possibleMovement1:
+						lock = 1
+						temp = possibleMovement1.index(5) # if there is a danger & victim node next to me
+						SAS1[1] = temp
 
-			# elif observation == 3: # danger is present
-			# 	if agent1[2] == 1: # agent is a robot
-			# 		lock = 1
-			# 		SAS1[1] = 5
-			# 	else: # agent is a human
-			# 		if 6 in possibleMovement1:
-			# 			temp = possibleMovement1.index(6) # already visited node
-			# 			SAS1[1] = temp
-			# 		if 1 in possibleMovement1:
-			# 			lock = 1
-			# 			temp = possibleMovement1.index(1) # movement node
-			# 			SAS1[1] = temp
-			# 		if 2 in possibleMovement1:
-			# 			lock = 1
-			# 			temp = possibleMovement1.index(2) # node that hasn't been visited
-			# 			SAS1[1] = temp
-			# 		if 4 in possibleMovement1:
-			# 			lock = 1
-			# 			temp = possibleMovement1.index(4) # if there is a victim only node next to me
-			# 			SAS1[1] = temp
+			elif observation == 3: # danger is present
+				if agent1[2] == 1: # agent is a robot
+					lock = 1
+					SAS1[1] = 5
+				else: # agent is a human
+					if 6 in possibleMovement1:
+						temp = possibleMovement1.index(6) # already visited node
+						SAS1[1] = temp
+					if 1 in possibleMovement1:
+						lock = 1
+						temp = possibleMovement1.index(1) # movement node
+						SAS1[1] = temp
+					if 2 in possibleMovement1:
+						lock = 1
+						temp = possibleMovement1.index(2) # node that hasn't been visited
+						SAS1[1] = temp
+					if 4 in possibleMovement1:
+						lock = 1
+						temp = possibleMovement1.index(4) # if there is a victim only node next to me
+						SAS1[1] = temp
 
-			# elif observation == 5: # danger & victim are present
-			# 	if agent1[2] == 0: # agent is a human
-			# 		lock = 1
-			# 		SAS1[1] = 6 # extract victim
-			# 	else: # agent is a robot
-			# 		lock = 1
-			# 		SAS1[1] = 5 # clear danger
+			elif observation == 5: # danger & victim are present
+				if agent1[2] == 0: # agent is a human
+					lock = 1
+					SAS1[1] = 6 # extract victim
+				else: # agent is a robot
+					lock = 1
+					SAS1[1] = 5 # clear danger
 			
-			# else:
-			# 	if agent1[2] == 1: # agent is a robot
-			# 		if 6 in possibleMovement1:
-			# 			temp = possibleMovement1.index(6) # already visited node
-			# 			SAS1[1] = temp
-			# 		if 1 in possibleMovement1:
-			# 			lock = 1
-			# 			temp = possibleMovement1.index(1) # movement node
-			# 			SAS1[1] = temp
-			# 		if 2 in possibleMovement1:
-			# 			lock = 1
-			# 			temp = possibleMovement1.index(2) # node that hasn't been visited
-			# 			SAS1[1] = temp
-			# 		if 3 in possibleMovement1:
-			# 			lock = 1
-			# 			temp = possibleMovement1.index(3) # if there is a danger node next to me
-			# 			SAS1[1] = temp
-			# 		if 5 in possibleMovement1:
-			# 			lock = 1
-			# 			temp = possibleMovement1.index(5) # if there is a danger node next to me
-			# 			SAS1[1] = temp
-			# 	else: # agent is a human
-			# 		if 6 in possibleMovement1:
-			# 			temp = possibleMovement1.index(6) # already visited node
-			# 			SAS1[1] = temp
-			# 		if 1 in possibleMovement1:
-			# 			lock = 1
-			# 			temp = possibleMovement1.index(1) # movement node
-			# 			SAS1[1] = temp
-			# 		if 2 in possibleMovement1:
-			# 			lock = 1
-			# 			temp = possibleMovement1.index(2) # node that hasn't been visited
-			# 			SAS1[1] = temp
-			# 		if 4 in possibleMovement1:
-			# 			lock = 1
-			# 			temp = possibleMovement1.index(4) # if there is a victim only node next to me
-			# 			SAS1[1] = temp
-			# # get action
+			else:
+				if agent1[2] == 1: # agent is a robot
+					if 6 in possibleMovement1:
+						temp = possibleMovement1.index(6) # already visited node
+						SAS1[1] = temp
+					if 1 in possibleMovement1:
+						lock = 1
+						temp = possibleMovement1.index(1) # movement node
+						SAS1[1] = temp
+					if 2 in possibleMovement1:
+						lock = 1
+						temp = possibleMovement1.index(2) # node that hasn't been visited
+						SAS1[1] = temp
+					if 3 in possibleMovement1:
+						lock = 1
+						temp = possibleMovement1.index(3) # if there is a danger node next to me
+						SAS1[1] = temp
+					if 5 in possibleMovement1:
+						lock = 1
+						temp = possibleMovement1.index(5) # if there is a danger node next to me
+						SAS1[1] = temp
+				else: # agent is a human
+					if 6 in possibleMovement1:
+						temp = possibleMovement1.index(6) # already visited node
+						SAS1[1] = temp
+					if 1 in possibleMovement1:
+						lock = 1
+						temp = possibleMovement1.index(1) # movement node
+						SAS1[1] = temp
+					if 2 in possibleMovement1:
+						lock = 1
+						temp = possibleMovement1.index(2) # node that hasn't been visited
+						SAS1[1] = temp
+					if 4 in possibleMovement1:
+						lock = 1
+						temp = possibleMovement1.index(4) # if there is a victim only node next to me
+						SAS1[1] = temp
+			# get action
 
-			# # print('\n'.join([''.join(['{:4}'.format(item) for item in row]) for row in world1]))
-			# if lock == 0:
-			# 	lastMove = previous1.pop()
-			# 	if lastMove == 1:
-			# 		SAS1[1] = 3
-			# 	elif lastMove == 2:
-			# 		SAS1[1] = 4
-			# 	elif lastMove == 3:
-			# 		SAS1[1] = 1
-			# 	elif lastMove == 4:
-			# 		SAS1[1] = 2
-			# 	elif lastMove == 5:
-			# 		lastMove1 = previous1.pop()
-			# 		if lastMove1 == 1:
-			# 			SAS1[1] = 3
-			# 		elif lastMove == 2:
-			# 			SAS1[1] = 4
-			# 		elif lastMove == 3:
-			# 			SAS1[1] = 1
-			# 		elif lastMove == 4:
-			# 			SAS1[1] = 2
-			# 	elif lastMove == 6:
-			# 		lastMove1 = previous1.pop()
-			# 		if lastMove1 == 1:
-			# 			SAS1[1] = 3
-			# 		elif lastMove == 2:
-			# 			SAS1[1] = 4
-			# 		elif lastMove == 3:
-			# 			SAS1[1] = 1
-			# 		elif lastMove == 4:
-			# 			SAS1[1] = 2
-			# 	elif lastMove == 0:
-			# 		lastMove1 = previous1.pop()
-			# 		if lastMove1 == 1:
-			# 			SAS1[1] = 3
-			# 		elif lastMove == 2:
-			# 			SAS1[1] = 4
-			# 		elif lastMove == 3:
-			# 			SAS1[1] = 1
-			# 		elif lastMove == 4:
-			# 			SAS1[1] = 2
-			# 	else:
-			# 		print("something wrong!")
-			# else:
-			# 	previous1.append(SAS1[1])
+			# print('\n'.join([''.join(['{:4}'.format(item) for item in row]) for row in world1]))
+			if lock == 0:
+				lastMove = previous1.pop()
+				if lastMove == 1:
+					SAS1[1] = 3
+				elif lastMove == 2:
+					SAS1[1] = 4
+				elif lastMove == 3:
+					SAS1[1] = 1
+				elif lastMove == 4:
+					SAS1[1] = 2
+				elif lastMove == 5:
+					lastMove1 = previous1.pop()
+					if lastMove1 == 1:
+						SAS1[1] = 3
+					elif lastMove == 2:
+						SAS1[1] = 4
+					elif lastMove == 3:
+						SAS1[1] = 1
+					elif lastMove == 4:
+						SAS1[1] = 2
+				elif lastMove == 6:
+					lastMove1 = previous1.pop()
+					if lastMove1 == 1:
+						SAS1[1] = 3
+					elif lastMove == 2:
+						SAS1[1] = 4
+					elif lastMove == 3:
+						SAS1[1] = 1
+					elif lastMove == 4:
+						SAS1[1] = 2
+				elif lastMove == 0:
+					lastMove1 = previous1.pop()
+					if lastMove1 == 1:
+						SAS1[1] = 3
+					elif lastMove == 2:
+						SAS1[1] = 4
+					elif lastMove == 3:
+						SAS1[1] = 1
+					elif lastMove == 4:
+						SAS1[1] = 2
+				else:
+					print("something wrong!")
+			else:
+				previous1.append(SAS1[1])
 
 
 
 			SAS2[0] = possibleMovement2[0] # current state
-			# observation = possibleMovement2[0] # Collect Observation
+			observation = possibleMovement2[0] # Collect Observation
 
-			# if observation == 4: # victim is present
-			# 	if agent2[2] == 0: # agent is a human
-			# 		lock = 1
-			# 		SAS2[1] = 6
-			# 	else: # agent is a robot
-			# 		if 6 in possibleMovement2:
-			# 			temp = possibleMovement2.index(6) # already visited node
-			# 			SAS2[1] = temp
-			# 		if 1 in possibleMovement2:
-			# 			lock = 1
-			# 			temp = possibleMovement2.index(1) # movement node
-			# 			SAS2[1] = temp
-			# 		if 2 in possibleMovement2:
-			# 			lock = 1
-			# 			temp = possibleMovement2.index(2) # node that hasn't been visited
-			# 			SAS2[1] = temp
-			# 		if 3 in possibleMovement2:
-			# 			lock = 1
-			# 			temp = possibleMovement2.index(3) # if there is a danger node next to me
-			# 			SAS2[1] = temp
-			# 		if 5 in possibleMovement2:
-			# 			lock = 1
-			# 			temp = possibleMovement2.index(5) # if there is a danger & victim node next to me
-			# 			SAS2[1] = temp
+			if observation == 4: # victim is present
+				if agent2[2] == 0: # agent is a human
+					lock = 1
+					SAS2[1] = 6
+				else: # agent is a robot
+					if 6 in possibleMovement2:
+						temp = possibleMovement2.index(6) # already visited node
+						SAS2[1] = temp
+					if 1 in possibleMovement2:
+						lock = 1
+						temp = possibleMovement2.index(1) # movement node
+						SAS2[1] = temp
+					if 2 in possibleMovement2:
+						lock = 1
+						temp = possibleMovement2.index(2) # node that hasn't been visited
+						SAS2[1] = temp
+					if 3 in possibleMovement2:
+						lock = 1
+						temp = possibleMovement2.index(3) # if there is a danger node next to me
+						SAS2[1] = temp
+					if 5 in possibleMovement2:
+						lock = 1
+						temp = possibleMovement2.index(5) # if there is a danger & victim node next to me
+						SAS2[1] = temp
 
-			# elif observation == 3: # danger is present
-			# 	if agent2[2] == 1: # agent is a robot
-			# 		lock = 1
-			# 		SAS2[1] = 5
-			# 	else: # agent is a human
-			# 		if 6 in possibleMovement2:
-			# 			temp = possibleMovement2.index(6) # already visited node
-			# 			SAS2[1] = temp
-			# 		if 1 in possibleMovement2:
-			# 			lock = 1
-			# 			temp = possibleMovement2.index(1) # movement node
-			# 			SAS2[1] = temp
-			# 		if 2 in possibleMovement2:
-			# 			lock = 1
-			# 			temp = possibleMovement2.index(2) # node that hasn't been visited
-			# 			SAS2[1] = temp
-			# 		if 4 in possibleMovement2:
-			# 			lock = 1
-			# 			temp = possibleMovement2.index(4) # if there is a victim only node next to me
-			# 			SAS2[1] = temp
+			elif observation == 3: # danger is present
+				if agent2[2] == 1: # agent is a robot
+					lock = 1
+					SAS2[1] = 5
+				else: # agent is a human
+					if 6 in possibleMovement2:
+						temp = possibleMovement2.index(6) # already visited node
+						SAS2[1] = temp
+					if 1 in possibleMovement2:
+						lock = 1
+						temp = possibleMovement2.index(1) # movement node
+						SAS2[1] = temp
+					if 2 in possibleMovement2:
+						lock = 1
+						temp = possibleMovement2.index(2) # node that hasn't been visited
+						SAS2[1] = temp
+					if 4 in possibleMovement2:
+						lock = 1
+						temp = possibleMovement2.index(4) # if there is a victim only node next to me
+						SAS2[1] = temp
 
-			# elif observation == 5: # danger & victim are present
-			# 	if agent2[2] == 0: # agent is a human
-			# 		lock = 1
-			# 		SAS2[1] = 6 # extract victim
-			# 	else: # agent is a robot
-			# 		lock = 1
-			# 		SAS2[1] = 5 # clear danger
+			elif observation == 5: # danger & victim are present
+				if agent2[2] == 0: # agent is a human
+					lock = 1
+					SAS2[1] = 6 # extract victim
+				else: # agent is a robot
+					lock = 1
+					SAS2[1] = 5 # clear danger
 			
-			# else:
-			# 	if agent2[2] == 1: # agent is a robot
-			# 		if 6 in possibleMovement2:
-			# 			temp = possibleMovement2.index(6) # already visited node
-			# 			SAS2[1] = temp
-			# 		if 1 in possibleMovement2:
-			# 			lock = 1
-			# 			temp = possibleMovement2.index(1) # movement node
-			# 			SAS2[1] = temp
-			# 		if 2 in possibleMovement2:
-			# 			lock = 1
-			# 			temp = possibleMovement2.index(2) # node that hasn't been visited
-			# 			SAS2[1] = temp
-			# 		if 3 in possibleMovement2:
-			# 			lock = 1
-			# 			temp = possibleMovement2.index(3) # if there is a danger node next to me
-			# 			SAS2[1] = temp
-			# 		if 5 in possibleMovement2:
-			# 			lock = 1
-			# 			temp = possibleMovement2.index(5) # if there is a danger node next to me
-			# 			SAS2[1] = temp
-			# 	else: # agent is a human
-			# 		if 6 in possibleMovement2:
-			# 			temp = possibleMovement2.index(6) # already visited node
-			# 			SAS2[1] = temp
-			# 		if 1 in possibleMovement2:
-			# 			lock = 1
-			# 			temp = possibleMovement2.index(1) # movement node
-			# 			SAS2[1] = temp
-			# 		if 2 in possibleMovement2:
-			# 			lock = 1
-			# 			temp = possibleMovement2.index(2) # node that hasn't been visited
-			# 			SAS2[1] = temp
-			# 		if 4 in possibleMovement2:
-			# 			lock = 1
-			# 			temp = possibleMovement2.index(4) # if there is a victim only node next to me
-			# 			SAS2[1] = temp
-			# # get action
+			else:
+				if agent2[2] == 1: # agent is a robot
+					if 6 in possibleMovement2:
+						temp = possibleMovement2.index(6) # already visited node
+						SAS2[1] = temp
+					if 1 in possibleMovement2:
+						lock = 1
+						temp = possibleMovement2.index(1) # movement node
+						SAS2[1] = temp
+					if 2 in possibleMovement2:
+						lock = 1
+						temp = possibleMovement2.index(2) # node that hasn't been visited
+						SAS2[1] = temp
+					if 3 in possibleMovement2:
+						lock = 1
+						temp = possibleMovement2.index(3) # if there is a danger node next to me
+						SAS2[1] = temp
+					if 5 in possibleMovement2:
+						lock = 1
+						temp = possibleMovement2.index(5) # if there is a danger node next to me
+						SAS2[1] = temp
+				else: # agent is a human
+					if 6 in possibleMovement2:
+						temp = possibleMovement2.index(6) # already visited node
+						SAS2[1] = temp
+					if 1 in possibleMovement2:
+						lock = 1
+						temp = possibleMovement2.index(1) # movement node
+						SAS2[1] = temp
+					if 2 in possibleMovement2:
+						lock = 1
+						temp = possibleMovement2.index(2) # node that hasn't been visited
+						SAS2[1] = temp
+					if 4 in possibleMovement2:
+						lock = 1
+						temp = possibleMovement2.index(4) # if there is a victim only node next to me
+						SAS2[1] = temp
+			# get action
 
-			# # print('\n'.join([''.join(['{:4}'.format(item) for item in row]) for row in world1]))
-			# if lock == 0:
-			# 	lastMove = previous2.pop()
-			# 	if lastMove == 1:
-			# 		SAS2[1] = 3
-			# 	elif lastMove == 2:
-			# 		SAS2[1] = 4
-			# 	elif lastMove == 3:
-			# 		SAS2[1] = 1
-			# 	elif lastMove == 4:
-			# 		SAS2[1] = 2
-			# 	elif lastMove == 5:
-			# 		lastMove1 = previous2.pop()
-			# 		if lastMove1 == 1:
-			# 			SAS2[1] = 3
-			# 		elif lastMove == 2:
-			# 			SAS2[1] = 4
-			# 		elif lastMove == 3:
-			# 			SAS2[1] = 1
-			# 		elif lastMove == 4:
-			# 			SAS2[1] = 2
-			# 	elif lastMove == 6:
-			# 		lastMove1 = previous2.pop()
-			# 		if lastMove1 == 1:
-			# 			SAS2[1] = 3
-			# 		elif lastMove == 2:
-			# 			SAS2[1] = 4
-			# 		elif lastMove == 3:
-			# 			SAS2[1] = 1
-			# 		elif lastMove == 4:
-			# 			SAS2[1] = 2
-			# 	elif lastMove == 0:
-			# 		lastMove1 = previous2.pop()
-			# 		if lastMove1 == 1:
-			# 			SAS2[1] = 3
-			# 		elif lastMove == 2:
-			# 			SAS2[1] = 4
-			# 		elif lastMove == 3:
-			# 			SAS2[1] = 1
-			# 		elif lastMove == 4:
-			# 			SAS2[1] = 2
-			# 	else:
-			# 		print("something wrong!")
-			# else:
-			# 	previous2.append(SAS2[1])
+			# print('\n'.join([''.join(['{:4}'.format(item) for item in row]) for row in world1]))
+			if lock == 0:
+				lastMove = previous2.pop()
+				if lastMove == 1:
+					SAS2[1] = 3
+				elif lastMove == 2:
+					SAS2[1] = 4
+				elif lastMove == 3:
+					SAS2[1] = 1
+				elif lastMove == 4:
+					SAS2[1] = 2
+				elif lastMove == 5:
+					lastMove1 = previous2.pop()
+					if lastMove1 == 1:
+						SAS2[1] = 3
+					elif lastMove == 2:
+						SAS2[1] = 4
+					elif lastMove == 3:
+						SAS2[1] = 1
+					elif lastMove == 4:
+						SAS2[1] = 2
+				elif lastMove == 6:
+					lastMove1 = previous2.pop()
+					if lastMove1 == 1:
+						SAS2[1] = 3
+					elif lastMove == 2:
+						SAS2[1] = 4
+					elif lastMove == 3:
+						SAS2[1] = 1
+					elif lastMove == 4:
+						SAS2[1] = 2
+				elif lastMove == 0:
+					lastMove1 = previous2.pop()
+					if lastMove1 == 1:
+						SAS2[1] = 3
+					elif lastMove == 2:
+						SAS2[1] = 4
+					elif lastMove == 3:
+						SAS2[1] = 1
+					elif lastMove == 4:
+						SAS2[1] = 2
+				else:
+					print("something wrong!")
+			else:
+				previous2.append(SAS2[1])
 
 
 
@@ -667,7 +667,7 @@ if __name__ == '__main__':
 			
 			print('\n'.join([''.join(['{:4}'.format(item) for item in row]) for row in world1]))
 
-			user_input = raw_input("exit? [y/N]")
+			user_input = raw_input("exit? [y/N]") # remove for instantaneous completion
 			steps = steps + 1
 			doneFlag = finished(world1)
 			if doneFlag == 1:
